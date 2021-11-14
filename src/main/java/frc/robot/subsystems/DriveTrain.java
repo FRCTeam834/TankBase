@@ -152,6 +152,16 @@ public class DriveTrain extends SubsystemBase {
 
   }
 
+  public void arcadeDrive(double forward, double turn)
+  {
+    driveTrain.arcadeDrive(forward, turn);
+  }
+
+  public void tankDrive(double left, double right)
+  {
+    driveTrain.tankDrive(left, right);
+  }
+
   public void commandForTrajectory(Trajectory trajectory)
   {
     /*

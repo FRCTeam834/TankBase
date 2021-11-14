@@ -29,7 +29,7 @@ public class TurnToAngle extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    RobotContainer.driveTrain.arcadeDrive(0, anglePID.calculate(RobotContainer.navX.getYaw(), currentAngle + targetAngle));
+    RobotContainer.driveTrain.arcadeDrive(0.0, anglePID.calculate(RobotContainer.navX.getYaw(), currentAngle + targetAngle));
   }
 
   // Called once the command ends or is interrupted.
