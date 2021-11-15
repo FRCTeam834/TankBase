@@ -34,9 +34,9 @@ jobs:
       run: ./gradlew build
       
     # Runs a single command using the runners shell
-    - name: Compile and run tests on robot code
+    - name: Check for spotless errors
       run: ./gradlew spotlessCheck
       
     # Runs a single command using the runners shell
-    - name: Compile and run tests on robot code
+    - name: Fix and reformat code
       run: ./gradlew spotlessApply
