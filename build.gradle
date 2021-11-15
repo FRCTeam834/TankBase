@@ -1,6 +1,7 @@
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2021.2.2"
+    id "com.diffplug.spotless" version "5.0.0"
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -76,4 +77,16 @@ sim {
 jar {
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
+}
+spotless {
+    java {
+        importOrder()
+        removeUnusedImports()
+        indentWithTabs(2)
+        indentWithSpaces(4)
+    }
+    java {
+        target "**/*.java"
+
+    }
 }

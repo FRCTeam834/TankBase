@@ -12,10 +12,11 @@ public class TurnToAngle extends CommandBase {
   PIDController anglePID = new PIDController(.5, 0, 0);
   double targetAngle = 0.0;
   double currentAngle = 0.0;
+
   /** Creates a new TurnToAngle. */
   public TurnToAngle(double targetAngle) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(RobotContainer.navX,RobotContainer.driveTrain);
+    addRequirements(RobotContainer.driveTrain);
     this.targetAngle = targetAngle;
     anglePID.setTolerance(3);
   }
@@ -29,7 +30,8 @@ public class TurnToAngle extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    RobotContainer.driveTrain.arcadeDrive(0.0, anglePID.calculate(RobotContainer.navX.getYaw(), currentAngle + targetAngle));
+    RobotContainer.driveTrain.arcadeDrive(0.0,
+        anglePID.calculate(RobotContainer.navX.getYaw(), currentAngle + targetAngle));
   }
 
   // Called once the command ends or is interrupted.

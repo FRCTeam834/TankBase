@@ -14,6 +14,7 @@ public class DriveForTime extends CommandBase {
   double leftVelocity = 0.0;
   double rightVelocity = 0.0;
   Timer timer = new Timer();
+
   public DriveForTime(double time, double leftVelocity, double rightVelocity) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.driveTrain);

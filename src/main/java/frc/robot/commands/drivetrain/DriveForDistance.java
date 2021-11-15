@@ -13,13 +13,14 @@ public class DriveForDistance extends CommandBase {
   double speed = 0.0;
   double time = 0.0;
   Timer timer = new Timer();
+
   /** Creates a new DriveForDistance. */
   public DriveForDistance(double distance, double speed) {
     addRequirements(RobotContainer.driveTrain);
     this.distance = distance;
     this.speed = speed;
     time = distance / speed;
-    
+
   }
 
   // Called when the command is initially scheduled.
