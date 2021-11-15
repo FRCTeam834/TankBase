@@ -12,10 +12,13 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 import com.revrobotics.CANSparkMax;
@@ -51,13 +54,13 @@ public class DriveTrain extends SubsystemBase {
   private final SimpleMotorFeedforward simpleMotorFeedforward = new SimpleMotorFeedforward(
       Constants.Drive.Auton.ksVolts, Constants.Drive.Auton.kvVoltSecondsPerMeter,
       Constants.Drive.Auton.kaVoltSecondsSquaredPerMeter);
-
   private final PIDController m_leftPIDController = new PIDController(Constants.Drive.Auton.kPDriveVel, 0, 0);
   private final PIDController m_rightPIDController = new PIDController(Constants.Drive.Auton.kPDriveVel, 0, 0);
 
+
   /** Creates a new DriveTrain. */
   public DriveTrain() {
-    setMotorInversions();
+    //setMotorInversions();
     setConversionFactor(m_leftMotor1);
     setConversionFactor(m_leftMotor2);
     setConversionFactor(m_leftMotor3);
@@ -70,7 +73,7 @@ public class DriveTrain extends SubsystemBase {
     setMotorControllerSettings(m_rightMotor1);
     setMotorControllerSettings(m_rightMotor2);
     setMotorControllerSettings(m_rightMotor3);
-    configureDrive(Constants.Drive.DriveSettings.JOYSTICK_DEADBAND, Constants.Drive.DriveSettings.MAX_OUTPUT);
+    //configureDrive(Constants.Drive.DriveSettings.JOYSTICK_DEADBAND, Constants.Drive.DriveSettings.MAX_OUTPUT);
   }
 
   @Override
@@ -83,11 +86,12 @@ public class DriveTrain extends SubsystemBase {
     motor.getEncoder().setPositionConversionFactor(Constants.Drive.ConversionFactors.POSITION_CONVERSION_FACTOR);
     motor.getEncoder().setVelocityConversionFactor(Constants.Drive.ConversionFactors.VELOCITY_CONVERSION_FACTOR);
   }
-
+/*
   private void setMotorInversions() {
     m_leftMotors.setInverted(Constants.Drive.DriveMotors.LEFT_INVERTED);
     m_leftMotors.setInverted(Constants.Drive.DriveMotors.RIGHT_INVERTED);
   }
+  */
 
   private void setMotorControllerSettings(CANSparkMax motor) {
     motor.restoreFactoryDefaults();
@@ -99,12 +103,12 @@ public class DriveTrain extends SubsystemBase {
   private void resetEncoder(CANSparkMax motor) {
     motor.getEncoder().setPosition(0);
   }
-
+/*
   private void configureDrive(double deadband, double maxOutput) {
     driveTrain.setDeadband(deadband);
     driveTrain.setMaxOutput(maxOutput);
   }
-
+*/
   public void stop() {
     m_leftMotors.stopMotor();
     m_rightMotors.stopMotor();
@@ -140,7 +144,10 @@ public class DriveTrain extends SubsystemBase {
 
     var rightFFEffort = simpleMotorFeedforward.calculate(rightVelocity);
     var rightPIDEffort = m_rightPIDController.calculate(m_rightMotor1.getEncoder().getVelocity(), rightVelocity);
-
+    SmartDashboard.putNumber("Left Setpoint", leftVelocity);
+    SmartDashboard.putNumber("Right Setpoint", rightVelocity);
+    SmartDashboard.putNumber("Left State", m_leftMotor1.getEncoder().getVelocity());
+    SmartDashboard.putNumber("Right State",m_leftMotor1.getEncoder().getVelocity());
     m_leftMotors.setVoltage(leftFFEffort + leftPIDEffort);
     m_rightMotors.setVoltage(rightFFEffort + rightPIDEffort);
   }
