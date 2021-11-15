@@ -10,6 +10,9 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.drivetrain.DriveForDistance;
+import frc.robot.commands.drivetrain.DriveForTime;
+import frc.robot.commands.drivetrain.TurnToAngle;
 import frc.robot.subsystems.DriveTrain;
 
 /**
@@ -25,7 +28,11 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public static AHRS navX = new AHRS(SPI.Port.kMXP);
-  public static DriveTrain driveTrain = new DriveTrain();
+  private final DriveTrain driveTrain = new DriveTrain();
+
+  private final DriveForDistance driveForDistance = new DriveForDistance(driveTrain, 1, 1);
+  private final DriveForTime driveForTime = new DriveForTime(driveTrain, 5, 1, 1);
+  private final TurnToAngle turnToAngle = new TurnToAngle(driveTrain, navX, 90);
 
   public RobotContainer() {
     // Configure the button bindings

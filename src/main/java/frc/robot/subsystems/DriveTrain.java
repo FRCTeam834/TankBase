@@ -5,50 +5,41 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import frc.robot.RobotContainer;
 
 public class DriveTrain extends SubsystemBase {
   // Left side of the drivetrain
 
-  private final CANSparkMax m_leftMotor1 = new CANSparkMax(Constants.Drive.DriveMotors.LEFT_MOTOR_1,
-      CANSparkMax.MotorType.kBrushless);
-  private final CANSparkMax m_leftMotor2 = new CANSparkMax(Constants.Drive.DriveMotors.LEFT_MOTOR_2,
-      CANSparkMax.MotorType.kBrushless);
-  private final CANSparkMax m_leftMotor3 = new CANSparkMax(Constants.Drive.DriveMotors.LEFT_MOTOR_3,
-      CANSparkMax.MotorType.kBrushless);
-
-  SpeedControllerGroup m_leftMotors = new SpeedControllerGroup(m_leftMotor1, m_leftMotor2, m_leftMotor3);
-
+  public CANSparkMax leftLeader1 = new CANSparkMax(Constants.Drive.DriveMotors.LEFT_MOTOR_1, MotorType.kBrushless);
+  public CANSparkMax leftFollower2 = new CANSparkMax(Constants.Drive.DriveMotors.LEFT_MOTOR_2, MotorType.kBrushless);
+  public CANSparkMax leftFollower3 = new CANSparkMax(Constants.Drive.DriveMotors.LEFT_MOTOR_3, MotorType.kBrushless);
   // Right side of the drivetrain
-  private final CANSparkMax m_rightMotor1 = new CANSparkMax(Constants.Drive.DriveMotors.RIGHT_MOTOR_1,
+  private final CANSparkMax rightLeader1 = new CANSparkMax(Constants.Drive.DriveMotors.RIGHT_MOTOR_1,
       CANSparkMax.MotorType.kBrushless);
-  private final CANSparkMax m_rightMotor2 = new CANSparkMax(Constants.Drive.DriveMotors.RIGHT_MOTOR_2,
+  private final CANSparkMax rightFollower2 = new CANSparkMax(Constants.Drive.DriveMotors.RIGHT_MOTOR_2,
       CANSparkMax.MotorType.kBrushless);
-  private final CANSparkMax m_rightMotor3 = new CANSparkMax(Constants.Drive.DriveMotors.RIGHT_MOTOR_3,
+  private final CANSparkMax rightFollower3 = new CANSparkMax(Constants.Drive.DriveMotors.RIGHT_MOTOR_3,
       CANSparkMax.MotorType.kBrushless);
 
-  SpeedControllerGroup m_rightMotors = new SpeedControllerGroup(m_rightMotor1, m_rightMotor2, m_rightMotor3);
 
   // Differential Drive
-  private final DifferentialDrive driveTrain = new DifferentialDrive(m_leftMotors, m_rightMotors);
+  private final DifferentialDrive driveTrain = new DifferentialDrive(leftLeader1, rightLeader1);
   private final DifferentialDriveOdometry driveOdometry = new DifferentialDriveOdometry(
       RobotContainer.navX.getRotation2d());
   private final SimpleMotorFeedforward simpleMotorFeedforward = new SimpleMotorFeedforward(
@@ -59,21 +50,28 @@ public class DriveTrain extends SubsystemBase {
 
 
   /** Creates a new DriveTrain. */
+  
   public DriveTrain() {
-    //setMotorInversions();
-    setConversionFactor(m_leftMotor1);
-    setConversionFactor(m_leftMotor2);
-    setConversionFactor(m_leftMotor3);
-    setConversionFactor(m_rightMotor1);
-    setConversionFactor(m_rightMotor2);
-    setConversionFactor(m_rightMotor3);
-    setMotorControllerSettings(m_leftMotor1);
-    setMotorControllerSettings(m_leftMotor2);
-    setMotorControllerSettings(m_leftMotor3);
-    setMotorControllerSettings(m_rightMotor1);
-    setMotorControllerSettings(m_rightMotor2);
-    setMotorControllerSettings(m_rightMotor3);
-    //configureDrive(Constants.Drive.DriveSettings.JOYSTICK_DEADBAND, Constants.Drive.DriveSettings.MAX_OUTPUT);
+    leftLeader1.setInverted(Constants.Drive.DriveMotors.LEFT_INVERTED);
+    rightLeader1.setInverted(Constants.Drive.DriveMotors.RIGHT_INVERTED);
+    leftFollower2.follow(leftLeader1);
+    leftFollower3.follow(leftLeader1);
+    rightFollower2.follow(rightLeader1);
+    rightFollower3.follow(rightLeader1);
+    setConversionFactor(leftLeader1);
+    setConversionFactor(leftFollower2);
+    setConversionFactor(leftFollower3);
+    setConversionFactor(rightLeader1);
+    setConversionFactor(rightFollower2);
+    setConversionFactor(rightFollower3);
+    setMotorControllerSettings(leftLeader1);
+    setMotorControllerSettings(leftFollower2);
+    setMotorControllerSettings(leftFollower3);
+    setMotorControllerSettings(rightLeader1);
+    setMotorControllerSettings(rightFollower2);
+    setMotorControllerSettings(rightFollower3);
+    driveTrain.setDeadband(Constants.Drive.DriveSettings.JOYSTICK_DEADBAND);
+    driveTrain.setMaxOutput(Constants.Drive.DriveSettings.MAX_OUTPUT);
   }
 
   @Override
@@ -86,12 +84,6 @@ public class DriveTrain extends SubsystemBase {
     motor.getEncoder().setPositionConversionFactor(Constants.Drive.ConversionFactors.POSITION_CONVERSION_FACTOR);
     motor.getEncoder().setVelocityConversionFactor(Constants.Drive.ConversionFactors.VELOCITY_CONVERSION_FACTOR);
   }
-/*
-  private void setMotorInversions() {
-    m_leftMotors.setInverted(Constants.Drive.DriveMotors.LEFT_INVERTED);
-    m_leftMotors.setInverted(Constants.Drive.DriveMotors.RIGHT_INVERTED);
-  }
-  */
 
   private void setMotorControllerSettings(CANSparkMax motor) {
     motor.restoreFactoryDefaults();
@@ -103,15 +95,11 @@ public class DriveTrain extends SubsystemBase {
   private void resetEncoder(CANSparkMax motor) {
     motor.getEncoder().setPosition(0);
   }
-/*
-  private void configureDrive(double deadband, double maxOutput) {
-    driveTrain.setDeadband(deadband);
-    driveTrain.setMaxOutput(maxOutput);
-  }
-*/
+
+
   public void stop() {
-    m_leftMotors.stopMotor();
-    m_rightMotors.stopMotor();
+    leftLeader1.stopMotor();
+    rightLeader1.stopMotor();
   }
 
   public Pose2d getPose() {
@@ -119,37 +107,37 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public void setCurrentPose() {
-    driveOdometry.update(RobotContainer.navX.getRotation2d(), m_leftMotor1.getEncoder().getPosition(),
-        m_rightMotor1.getEncoder().getPosition());
+    driveOdometry.update(RobotContainer.navX.getRotation2d(), leftLeader1.getEncoder().getPosition(),
+    rightLeader1.getEncoder().getPosition());
   }
 
   public void resetOdometry(Pose2d pose) {
-    resetEncoder(m_leftMotor1);
-    resetEncoder(m_leftMotor2);
-    resetEncoder(m_leftMotor3);
-    resetEncoder(m_rightMotor1);
-    resetEncoder(m_rightMotor2);
-    resetEncoder(m_rightMotor3);
+    resetEncoder(leftLeader1);
+    resetEncoder(leftFollower2);
+    resetEncoder(leftFollower3);
+    resetEncoder(rightLeader1);
+    resetEncoder(rightFollower2);
+    resetEncoder(rightFollower3);
     driveOdometry.resetPosition(pose, RobotContainer.navX.getRotation2d());
   }
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(m_leftMotor1.getEncoder().getVelocity(),
-        m_rightMotor1.getEncoder().getVelocity());
+    return new DifferentialDriveWheelSpeeds(leftLeader1.getEncoder().getVelocity(),
+        rightLeader1.getEncoder().getVelocity());
   }
 
   public void tankDriveVelocity(double leftVelocity, double rightVelocity) {
     var leftFFEffort = simpleMotorFeedforward.calculate(leftVelocity);
-    var leftPIDEffort = m_leftPIDController.calculate(m_leftMotor1.getEncoder().getVelocity(), leftVelocity);
+    var leftPIDEffort = m_leftPIDController.calculate(leftLeader1.getEncoder().getVelocity(), leftVelocity);
 
     var rightFFEffort = simpleMotorFeedforward.calculate(rightVelocity);
-    var rightPIDEffort = m_rightPIDController.calculate(m_rightMotor1.getEncoder().getVelocity(), rightVelocity);
+    var rightPIDEffort = m_rightPIDController.calculate(rightLeader1.getEncoder().getVelocity(), rightVelocity);
     SmartDashboard.putNumber("Left Setpoint", leftVelocity);
     SmartDashboard.putNumber("Right Setpoint", rightVelocity);
-    SmartDashboard.putNumber("Left State", m_leftMotor1.getEncoder().getVelocity());
-    SmartDashboard.putNumber("Right State",m_leftMotor1.getEncoder().getVelocity());
-    m_leftMotors.setVoltage(leftFFEffort + leftPIDEffort);
-    m_rightMotors.setVoltage(rightFFEffort + rightPIDEffort);
+    SmartDashboard.putNumber("Left State", leftLeader1.getEncoder().getVelocity());
+    SmartDashboard.putNumber("Right State",rightLeader1.getEncoder().getVelocity());
+    leftLeader1.setVoltage(leftFFEffort + leftPIDEffort);
+    leftLeader1.setVoltage(rightFFEffort + rightPIDEffort);
   }
 
   public void arcadeDrive(double forward, double turn) {
@@ -170,5 +158,4 @@ public class DriveTrain extends SubsystemBase {
     return ramseteCommand;
 
   }
-
 }

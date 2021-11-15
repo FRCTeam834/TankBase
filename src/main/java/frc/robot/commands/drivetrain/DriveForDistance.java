@@ -6,17 +6,19 @@ package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
+import frc.robot.subsystems.DriveTrain;
 
 public class DriveForDistance extends CommandBase {
   double distance = 0.0;
   double speed = 0.0;
   double time = 0.0;
   Timer timer = new Timer();
+  DriveTrain driveTrain;
 
   /** Creates a new DriveForDistance. */
-  public DriveForDistance(double distance, double speed) {
-    addRequirements(RobotContainer.driveTrain);
+  public DriveForDistance(DriveTrain driveTrain, double distance, double speed) {
+    addRequirements(driveTrain);
+    this.driveTrain = driveTrain;
     this.distance = distance;
     this.speed = speed;
     time = distance / speed;
@@ -32,13 +34,13 @@ public class DriveForDistance extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    RobotContainer.driveTrain.tankDriveVelocity(speed, speed);
+    driveTrain.tankDriveVelocity(speed, speed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.driveTrain.stop();
+    driveTrain.stop();
     timer.stop();
     timer.reset();
   }
