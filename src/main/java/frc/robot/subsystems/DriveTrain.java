@@ -50,7 +50,7 @@ public class DriveTrain extends SubsystemBase {
 
 
   /** Creates a new DriveTrain. */
-  
+
   public DriveTrain() {
     leftLeader1.setInverted(Constants.Drive.DriveMotors.LEFT_INVERTED);
     rightLeader1.setInverted(Constants.Drive.DriveMotors.RIGHT_INVERTED);
@@ -59,11 +59,7 @@ public class DriveTrain extends SubsystemBase {
     rightFollower2.follow(rightLeader1);
     rightFollower3.follow(rightLeader1);
     setConversionFactor(leftLeader1);
-    setConversionFactor(leftFollower2);
-    setConversionFactor(leftFollower3);
     setConversionFactor(rightLeader1);
-    setConversionFactor(rightFollower2);
-    setConversionFactor(rightFollower3);
     setMotorControllerSettings(leftLeader1);
     setMotorControllerSettings(leftFollower2);
     setMotorControllerSettings(leftFollower3);
